@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>轮播器原理及其应用</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>项目名称：<strong>轮播器</strong></h1>
+<h2>演讲：梁泳炀</h2>
+<h1>项目应用：</h1>
+<h3>企业主页banner展示框、商城商品展示框、网站图库展示，漫画网站等。</h3>
+<h1>项目原理</h1>
+<h3>利用在同一个父容器中，同一时间内通过改变其余元素与自身的的显示状态来进行一个视图的切换。</h3>
+<h1>项目知识点大纲</h1>
+<h3>1. 整体布局：用CSS装饰HTML内容，父级元素与子及元素的相对定位与绝对定位。</h3>
+<h3>2. JS、JQ整体应用：</h3>
+<h4>①JQ的两种加载方式</h4>
+<h4>②变量的作用域</h4>
+<h4>③JS函数的定义与调用</h4>
+<h4>④获取元素</h4>
+<h4>⑤JQ控制CSS切换显示与隐藏</h4>
+<h4>⑥JQ控制CSS样式操作</h4>
+<h4>⑦选择器的使用</h4>
+<h4>⑧定时器设置与取消</h4>
+<h4>⑨hover事件</h4>
+<h4>⑩绑定事件</h4>
+<h4>⑪hover伪类控制CSS渐变</h4>
+<h4>⑫JQ特殊效果</h4>
+<h4>⑬条件语句判断</h4>
+<h4>⑭实现动画无缝连接</h4>
+<h1>内容</h1>
+<h2>1.1. HTML整体布局</h2>
+<pre><code>&lt;body&gt;
+&lt;div id=&quot;content&quot;&gt;
+    &lt;!--主显示区--&gt;
+    &lt;div id=&quot;player&quot;&gt;
+        &lt;img src=&quot;image/xxj_1.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_2.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_3.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_4.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_5.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_6.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_7.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_8.jpg&quot;&gt;
+        &lt;img src=&quot;image/xxj_9.jpg&quot;&gt;          
+    &lt;/div&gt;
+    &lt;!--显示标签--&gt;
+    &lt;div id=&quot;btn_left&quot;&gt;&amp;lt; &lt;/div&gt;  
+    &lt;div id=&quot;box&quot;&gt;
+        &lt;div id=&quot;tags&quot;&gt;
+            &lt;img src=&quot;image/xxj_1.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_2.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_3.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_4.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_5.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_6.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_7.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_8.jpg&quot;&gt;
+            &lt;img src=&quot;image/xxj_9.jpg&quot;&gt;           
+        &lt;/div&gt;
+    &lt;/div&gt;        
+     &lt;div id=&quot;btn_right&quot;&gt;&amp;gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;audio autoplay=&quot;autoplay&quot; loop=&quot;loop&quot;&gt;
+   &lt;source src=&quot;./music/仙剑奇侠传一 - 蝶恋 - 月如.mp3&quot; type=&quot;audio/mpeg&quot;&gt;
+&lt;/audio&gt;
+&lt;/body&gt;
+</code></pre>
+
+<h2>1.2. CSS装饰布局</h2>
+<pre><code>/**********整体布局**********/
+*{margin:0; padding:0; border:0;}
+body{background-color:rgba(0,0,0,0.4);}
+img{display: block;}
+#content{position:relative; width:1060px; height:640px; margin:20px auto; border:2px solid #FFF;}
+#content:hover #tags img{opacity:1;}
+
+/**********图片主要显示区**************/
+#player img{position:absolute; float:left; width:100%; height:100%; top:0;opacity:0;transition:0.5s;}
+
+#player .active{opacity:1;}
+
+/**********图片显示标签**************/
+#tags{position:absolute; left:40px; bottom:20px;}
+#tags img{width:100px; height:60px; float:left; margin-right:10px; transition:1s; opacity:0.5; cursor:pointer;}
+
+#tags .active{opacity: 1;transform:scale(1.1);border:3px solid red;}
+
+/************按钮设置*************/
+#btn_left{position:absolute; left:10px; bottom:45%;float:left;}
+#btn_right{position:absolute; right:10px; bottom:45%;}
+#btn_left,#btn_right{display:block;width:20px;height:50px;background-color: white;text-align:center;line-height: 50px;opacity: 0.5}
+#btn_left:hover,#btn_right:hover{transform:scale(1.1); cursor:pointer;}
+</code></pre>
+
+<h3>用CSS属性将整体布局进行装饰后，要先确定好各元素的父级与子级的关系，然后再确定元素的定位。</h3>
+<h3>这里的父级元素为外边设定好边框的盒子，其余的盒子元素为它的父级元素，而img属性则分为两部分，一部分是player下的img，一部分为tags下的img。</h3>
+<p><img src="./pic/CSS定位.png" /></p>
+<h2>2.1. JQ的两种加载方式</h2>
+<h3>设置完HTML与CSS，我们开始写JS/JQ代码。</h3>
+<h3>写JQ代码前，须导入JQ的框架文件。</h3>
+<h3>JQ代码写在body的后面时，可以直接引用。而把JQ代码写在head里面的时候，则需要入口函数进行调用,和JS中的window.onload类似。</h3>
+<pre><code>$(function(){内容})
+</code></pre>
+
+<h2>2.2. 变量的作用域</h2>
+<pre><code>var banner_time; //定义计时器
+var index = 0;  // 获取下标
+var len = $('#player img').length;  // 元素的个数
+</code></pre>
+
+<h3>这里要注意的是，此处定义的index在后面我们需要一直用到，而且是个变量，从一个元素开始，起始值为0。在函数外定义的变量，其余函数皆能使用，但是在其中一个函数中定义的变量，其余函数则不能获取它的值。</h3>
+<h2>2.3. 关于元素的获取</h2>
+<h3>元素的获取，在定义变量的时候已经有例子了。</h3>
+<pre><code>var len = $('#player img').length;  // 元素的个数
+</code></pre>
+
+<h3>另外，每个元素的index是我们需要获取的数据，我们可以通过修改变量来获取到当前显示的元素的下标。</h3>
+<pre><code>index=$(&quot;#tags img&quot;).index(this); // 获取当前显示的图片的下标值
+</code></pre>
+
+<h2>2.4. JQ控制CSS切换显示与隐藏</h2>
+<p><img src="./pic/CSS隐藏与显示.png" /></p>
+<p><img src="./pic/JS修改CSS属性显示与隐藏.png" /></p>
+<h3>这里是利用CSS设置透明度，然后用JQ控制CSS修改元素的透明度来让其进行显示与隐藏的切换。</h3>
+<h3>当然，也可以通过另外的一种方式来控制图片的隐藏与显示。</h3>
+<pre><code>/*********显示和隐藏图片************/
+$(&quot;#player img&quot;).hide();
+$(&quot;#player img&quot;).eq(index).show();
+$(&quot;#tags img&quot;).eq(index).css({'border':'3px solid #6FF','opacity':1});
+</code></pre>
+
+<h3>此方式是将img的display属性设置为block，然后程序开始运行的时候，用JQ中的hide方法将所有图片隐藏，然后设置让图片按序列开始显示。</h3>
+<h2>2.5. JS函数的定义与调用</h2>
+<h2>2.6. JQ控制CSS样式操作</h2>
+<h3>定义一个函数，增加或删减元素的类，让所有的图片先隐藏，并获取当前显示的图片的下标值index，让其增加让其透明度为1的类（即显示）。并且小图与大图显示相对应的图片。</h3>
+<h3>函数定义完成后，用定时器去调用此函数。</h3>
+<pre><code>function banner(){
+    index ++;
+    if(index &gt; len - 1){  //判断如果index超过了大图的长度-1，就回到第0张
+        index = 0
+    }       
+    $('#player img').removeClass('active').eq(index).addClass('active'); //所有大图隐藏,大图第index张图片显示
+    $('#tags img').removeClass('active').eq(index).addClass('active'); //所有小图清掉样式，比如：边框，透明度等,小图第index张图片显示
+}
+
+banner_time = setInterval(banner,3000);  //定时器调用此函数
+</code></pre>
+
+<h2>2.7. 选择器的使用</h2>
+<h3>上一环节的功能，在小图显示的同时，让相对应的大图也同时显示，这个功能也可以用选择器的方式去编写。</h3>
+<pre><code>/*******小图移动时大图显示相应的图片*******/
+function change(){
+    $(&quot;#tags img&quot;).eq(index).css({'border':'3px solid #6FF','opacity':1}).siblings().css({'border':'none','opacity':0.5});
+    $(&quot;#player img&quot;).fadeOut();
+    $(&quot;#player img&quot;).eq(index).fadeIn(500);         
+}
+</code></pre>
+
+<h3>这里是通过选择器，选中当前元素，改变其CSS值，并将其兄弟元素的CSS值改变，并加入了JQ的淡出淡入的特殊效果，达到了动态变换的效果。</h3>
+<h3>另外，在后面的左右按钮设置中，也可以通过选择器prev()与next()，来改变其兄弟元素的CSS值来达到效果。不过此方法会比较麻烦，不建议使用。</h3>
+<pre><code>/*左按钮，返回上一个元素*/
+$(&quot;#tags img&quot;).eq(index).prev().css({'border':'3px solid #6FF'}).siblings().css({'border':'none'});         
+$(&quot;#player img&quot;).eq(index).prev().fadeIn(500);  
+ /*右按钮，进入下一个元素*/
+$(&quot;#tags img&quot;).eq(index).next().css({'border':'3px solid #6FF'}).siblings().css({'border':'none'});         
+$(&quot;#player img&quot;).eq(index).next().fadeIn(500);
+</code></pre>
+
+<h2>2.8. 定时器的设置与取消</h2>
+<h2>2.9. hover事件</h2>
+<h3>利用hover事件，设定鼠标移出移入时，定时器的开与关。</h3>
+<h3>在每一次产生变化前，可以设置先清除定时器。</h3>
+<pre><code>banner_time = setInterval(banner,3000);  //设置定时器，每三秒播放一次
+
+$('#tags img').hover(function(){   //小图鼠标移动上去时触发事件
+    clearInterval(banner_time);  //取消定时器，让轮播器暂停
+    $('#player img').removeClass('active').eq($(this).index()).addClass('active');  
+    $('#tags img').removeClass('active').eq($(this).index()).addClass('active');    
+    index = $(this).index();  //然后让index等于当前鼠标移动上去图片的索引值。
+    banner_time = setInterval(banner,3000);  //继续让轮播器播放
+})
+</code></pre>
+
+<h2>2.10. 绑定事件</h2>
+<h3>设置左右两个按钮，用以控制图片的切换。于此，我们在按钮中绑定了click事件。</h3>
+<pre><code>/*********左按钮事件绑定************/
+$('#btn_left').click(function(){  
+    clearInterval(banner_time);  //取消定时器，让轮播器暂停
+    index --;  //每次点击的时候，索引值 - 1；
+    if(index &lt; 0){  //判断如果索引值小于0，那么就去到最后一张图片
+        index = len - 1;
+    }
+    $('#player img').removeClass('active').eq(index).addClass('active');
+    $('#tags img').removeClass('active').eq(index).addClass('active');
+    banner_time = setInterval(banner,3000);
+})
+
+/*********右按钮事件绑定************/
+$('#btn_right').click(function(){
+    clearInterval(banner_time);
+    index ++;
+    if(index &gt; len - 1){
+        index = 0
+    }
+    $('#player img').removeClass('active').eq(index).addClass('active');
+    $('#tags img').removeClass('active').eq(index).addClass('active');
+    banner_time = setInterval(banner,3000);
+})
+</code></pre>
+
+<h2>2.11. hover伪类控制CSS渐变</h2>
+<h2>2.12. JQ特殊效果</h2>
+<h3>用CSS添加hover属性使图片增加动态效果。</h3>
+<h3>这里的transform:scale(1.1)是让元素的大小放大1.1倍。</h3>
+<pre><code>#content:hover #tags img{opacity:1;}
+#tags img:hover{transform:scale(1.1); cursor:pointer;}
+#btn_left:hover,#btn_right:hover{transform:scale(1.1); cursor:pointer;}
+</code></pre>
+
+<h3>而JQ的特殊效果，主要显示在图片的隐藏与显示当中，一开始的hide与show也是其中之一，而在图片之间的变换则采用了fadeIn与fadeOut的形式。可以根据个人爱好，选择slideDown与slideUp。当然还有更多的像3D变换这种类型就不谈论了。</h3>
+<pre><code>$(&quot;#player img&quot;).fadeOut();
+$(&quot;#player img&quot;).eq(index).fadeIn(500);
+</code></pre>
+
+<h1>添加功能</h1>
+<h3>以上，一个简单的轮播器就做出来了。一般的功能做到这里就可以了。但是在这个的基础上，还可以稍微的进行部分功能的增加。</h3>
+<h3>例如多玩游戏的图库，每一个图集的图片都是很多的。有时候图片的标签个数比屏幕显示的数量要多。此时，我们可以增加一个功能让标签随着光标位置改变而进行滑动，也就是无缝移动的原理。</h3>
+<h3>我们先在原基础上增加元素的数量，并创建一个固定宽高的div（id=&quot;box&quot;）作为tags的外框，并用于限制标签图tags的排列方式，超出屏幕范围的tags我们则把box的overflow设置为hidden（溢出隐藏）。</h3>
+<pre><code>#content #box{position:absolute;height:100px;width:996px;left:40px; bottom:20px;overflow: hidden;}
+</code></pre>
+
+<p><img src="./pic/增加元素.png" /></p>
+<h3>同样的大图显示也增加相对应的元素。</h3>
+<h2>2.13. 条件语句判断</h2>
+<h2>2.14. 无缝连接的实现</h2>
+<h3>条件语句判断在前面的绑定按钮事件中也需要用到。作用是让其形成一个循环。</h3>
+<h3>在左按钮事件中可进行循环判断，如判断如果索引值小于0，那么就去到最后一张图片。</h3>
+<pre><code>index --;  //每次点击的时候，索引值 - 1；
+    if(index &lt; 0){  //判断如果索引值小于0，那么就去到最后一张图片
+        index = len - 1;
+    }
+</code></pre>
+
+<h3>在右按钮事件中可进行循环判断，如判断如果索引值大于元素个数-1，那么就返回第一张图片。</h3>
+<pre><code>index ++;  //每次点击的时候，索引值 + 1；
+    if(index &gt; len - 1){  //判断如果索引值超出元素个数-1，那么就返回第一张图片
+        index = 0
+    }
+</code></pre>
+
+<h3>然后我们再定义一个新变量来接收tags移动的距离。</h3>
+<pre><code>var disleft = 0 //定义标签移动距离
+</code></pre>
+
+<h3>再定义对tags移动距离的条件判断函数，改变disleft的值以达到标签栏tags的移动。</h3>
+<p><img src="./pic/tags移动.png" /></p>
+<h3>这其中的'transition':'1s'是设置元素属性发生改变所需的时间，如果不加入的话，默认变化速度可能会太快。</h3>
+<h3>然后在左右按钮事件中与自动轮播的函数中，去调用此判断函数，让标签栏随元素位置变化而变化。</h3>
+<h3>设置完成后，此轮播器就可以实现自动循环播放无缝连接的功能，也可以手动控制其定时器的开启与关闭。</h3>
+<h3>另外，还可以额外设置取消文字选中，以防操作太快把元素选中变为蓝色。只需在CSS设置中加上这段内容。</h3>
+<p><img src="./pic/取消选中.png" /></p>
+<h3>这其中的代码有部分可以封装成函数，然后让其直接调用。</h3>
+<p><img src="./pic/定义函数.png" /></p>
+<p><img src="./pic/事件调用函数.png" /></p>
+<p><img src="./pic/自动播放及定时器.png" /></p>
+<h1>总结：</h1>
+<h3>以上便是将我们所学到的前端知识点糅合在一起做成的一个小项目。</h3>
+<h3>我们个人认为在我们写代码之前，我们需要构思出大体结构，并将需要的功能做好一个大致的思路，这个点我觉得是最重要的，然后再去思考你想要做的功能该用什么方法去实现。通过不断地调试去得到自己想要的结果。</h3>
+<h3>望与诸君共勉，共同加油。</h3>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

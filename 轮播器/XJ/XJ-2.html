@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片切换</title>
+<style type="text/css">
+
+/**********总体布局**************/
+*{margin:0; padding:0; border:0;}
+body{background-color:rgba(0,0,0,0.4);}
+#content{position:relative; width:1060px; height:640px; margin:20px auto; border:2px solid #FFF;}
+#content:hover #tags img{opacity:1;}
+
+/**********图片主要显示区**************/
+#player img{display:block; position:absolute; float:left; width:100%; height:100%; top:0;}
+
+/**********图片显示标签**************/
+#content #box{position:absolute;height:100px;width:996px;left:40px; bottom:20px;overflow: hidden;}
+#tags{position:absolute;bottom:20px;width:2200px;}
+#tags img{display:block; width:100px; height:60px; float:left; margin-right:10px; transition:1s; opacity:0.5;}
+#tags img:hover{transform:scale(1.1); cursor:pointer;}
+
+/************按钮设置*************/
+#btn_left{position:absolute; left:10px; bottom:45%;float:left;}
+#btn_right{position:absolute; right:10px; bottom:45%;}
+#btn_left,#btn_right{display:block;width:20px;height:50px;background-color: white;text-align:center;line-height: 50px;opacity: 0.5}
+#btn_left:hover,#btn_right:hover{transform:scale(1.1); cursor:pointer;}
+
+/*********取消双击选中文字********/
+#tags img,#btn_left,#btn_right{moz-user-select:none;/*火狐*/
+    -webkit-user-select:none;/*webkit浏览器*/
+    -ms-user-select:none;/*IE10*/
+    -khtml-user-select:none;/*早期浏览器*/
+  	user-select:none;}
+</style>
+
+<script type="text/javascript" src="./JS/jquery-1.12.4.min.js"></script>
+<script type="text/javascript">
+    $(function(){                      //当文档载入完毕就执行		
+		var index=0   //获取下标				
+		var len=$("#tags img").length  //元素个数
+		var timer;		//计时器
+		var disleft = 0   //定义标签移动距离
+		
+		/*********显示和隐藏图片************/
+		$("#player img").hide();
+		$("#player img").eq(index).show();
+		$("#tags img").eq(index).css({'border':'3px solid #6FF','opacity':1});
+		
+		/***************tags移动函数***************/
+		function tagsmove(){
+			if (index >=0 && index <=6){
+				$('#tags').css({'left':'0px','transition':'1s'});
+			}else if (6 < index && index <= len-1){	
+				disleft = ((index * -110)+220)+"px";				
+				$('#tags').css({'left':disleft,'transition':'1s'});
+			}
+		}
+		
+		/*******小图移动时大图显示相应的图片*******/
+		function change(){
+			$("#tags img").eq(index).css({'border':'3px solid 			#6FF','opacity':1}).siblings().css({'border':'none','opacity':0.5});
+			$("#player img").fadeOut();
+			$("#player img").eq(index).fadeIn(500);			
+		}
+		
+		/*****鼠标移入触发事件*****/
+		$("#tags img").mouseenter(function(){
+			index=$("#tags img").index(this);
+			tagsmove();
+			change();
+		})
+		
+		/**********点击按钮**************/
+		$("#btn_left").click(function(){
+			stop();
+			index--;	
+			if(index<0){
+				index = len - 1;
+			}	
+			tagsmove();
+			change();						
+		})
+		
+		$("#btn_right").click(function(){	
+			stop();
+			index++;			
+			if(index > len-1){
+				index=0;									
+			}		
+			tagsmove();
+			change();		
+		})			
+			
+		/*********自动播放图片***********/
+		function autoplay(){
+			index++;
+			if(index>=len){
+				index=0;	
+			}
+			tagsmove();
+			change();		
+		}
+		
+		/**********播放图片(定时器开启)**************/
+		function play(){
+			timer=setInterval(autoplay,3000);	
+		}
+		
+		/**********停止播放图片(定时器关闭)**************/
+		function stop(){
+			clearInterval(timer);	
+		}
+		
+		/*****鼠标悬浮或移出时播放或停止切换图片(定时器开关)*****/
+		$("#content").hover(function(){
+			stop();
+		},
+		function(){
+			play();	
+		})		
+		play();
+	})
+</script>
+</head>
+
+<body>
+	<div id="content">
+    	<!--主显示区-->
+    	<div id="player">
+            <img src="image/xxj_1.jpg">
+            <img src="image/xxj_2.jpg">
+            <img src="image/xxj_3.jpg">
+            <img src="image/xxj_4.jpg">
+            <img src="image/xxj_5.jpg">
+            <img src="image/xxj_6.jpg">
+            <img src="image/xxj_7.jpg">
+            <img src="image/xxj_8.jpg">
+            <img src="image/xxj_9.jpg">
+            <img src="image/xxj_10.jpg">
+            <img src="image/xxj_11.jpg">
+            <img src="image/xxj_12.jpg">
+            <img src="image/xxj_13.jpg">
+            <img src="image/xxj_14.jpg">
+            <img src="image/xxj_15.jpg">
+            <img src="image/xxj_16.jpg">
+            <img src="image/xxj_17.jpg">
+            <img src="image/xxj_18.jpg">
+            <img src="image/xxj_19.jpg">            
+        </div>
+        <!--显示标签-->
+        <div id="btn_left">&lt; </div>	
+        <div id="box">
+        	<div id="tags">
+	            <img src="image/xxj_1.jpg">
+	            <img src="image/xxj_2.jpg">
+	            <img src="image/xxj_3.jpg">
+	            <img src="image/xxj_4.jpg">
+	            <img src="image/xxj_5.jpg">
+	            <img src="image/xxj_6.jpg">
+	            <img src="image/xxj_7.jpg">
+	            <img src="image/xxj_8.jpg">
+	            <img src="image/xxj_9.jpg">
+	            <img src="image/xxj_10.jpg">
+	            <img src="image/xxj_11.jpg">
+	            <img src="image/xxj_12.jpg">
+	            <img src="image/xxj_13.jpg">
+	            <img src="image/xxj_14.jpg">
+	            <img src="image/xxj_15.jpg">
+	            <img src="image/xxj_16.jpg">
+	            <img src="image/xxj_17.jpg">
+	            <img src="image/xxj_18.jpg">
+	            <img src="image/xxj_19.jpg">	            
+	        </div>
+        </div>        
+         <div id="btn_right">&gt;</div>
+    </div>
+	<audio autoplay="autoplay" loop="loop">
+    	<source src="./music/仙剑奇侠传一 - 蝶恋 - 月如.mp3" type="audio/mpeg">
+	</audio>
+</body>
+</html>
